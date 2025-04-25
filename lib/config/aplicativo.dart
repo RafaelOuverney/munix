@@ -1,0 +1,25 @@
+import 'package:flutter/material.dart';
+import 'package:munix/config/rotas.dart';
+import 'package:munix/pages/forgot_password.dart';
+import 'package:munix/pages/login.dart';
+import 'package:munix/pages/register.dart';
+
+class Aplicativo extends StatelessWidget {
+  const Aplicativo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Aplicativo',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      initialRoute: Rotas.home,
+      routes: {
+        Rotas.home: (context) => const Login(),
+        Rotas.forgotPassword: (context) => const ForgotPassword(),
+        Rotas.register: (context) =>  Register(),
+      },
+      // 
+    );
+  }
+}
