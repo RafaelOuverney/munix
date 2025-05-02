@@ -10,6 +10,7 @@ import 'package:munix/pages/forgot_password.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:munix/firebase_options.dart';
 import 'package:munix/services/auth_service.dart';
+import 'package:translator/translator.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -120,9 +121,11 @@ class _LoginState extends State<Login> {
                           );
                           Navigator.pushNamed(context, Rotas.main);
                         } on FirebaseAuthException catch (e) {
-                          setState(() {
-                            errorMessage =
-                                e.message ?? 'Email ou senha inválidos.';
+                          setState(() async {
+                            final translation = await GoogleTranslator().translate(e.message ?? 'Erro desconhecido', from: 'en', to: 'pt');
+                            setState(() {
+                              errorMessage = translation.text;
+                            });
                           });
                         }
                       },

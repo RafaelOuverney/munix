@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:munix/pages/login.dart';
 import 'package:munix/services/auth_service.dart';
+import 'package:translator/translator.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -142,8 +143,10 @@ class _RegisterState extends State<Register> {
                           ),
                         );
                       } on FirebaseAuthException catch (e) {
-                        setState(() {
-                          errorMessage = e.message ?? 'Um erro ocorreu';
+                        setState(() async {
+                          await GoogleTranslator().translate(e.message ?? 'Erro desconhecido', from: 'en', to: 'pt').then((value) {
+                            errorMessage = value.text;
+                          });
                           showDialog(context: context, builder: (BuildContext context) => AlertDialog(
                             title: const Text('Erro'),
                             icon: Icon(Icons.error, color: Colors.red,),
