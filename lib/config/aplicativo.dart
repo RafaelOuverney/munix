@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:munix/config/rotas.dart';
 import 'package:munix/pages/forgot_password.dart';
+import 'package:munix/pages/home.dart';
 import 'package:munix/pages/login.dart';
 import 'package:munix/pages/register.dart';
 
@@ -15,7 +16,8 @@ class Aplicativo extends StatelessWidget {
       theme: ThemeData(primarySwatch: Colors.blue),
       initialRoute: Rotas.home,
       routes: {
-        Rotas.home: (context) => const Login(),
+        Rotas.home: (context) =>  Login(),
+        Rotas.main: (context) =>  const HomePage(),
         Rotas.forgotPassword: (context) => const ForgotPassword(),
         Rotas.register: (context) =>  Register(),
       },

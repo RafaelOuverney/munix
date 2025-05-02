@@ -1,4 +1,9 @@
+import 'dart:math';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:munix/pages/login.dart';
+import 'package:munix/services/auth_service.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -7,10 +12,14 @@ class Register extends StatefulWidget {
   State<Register> createState() => _RegisterState();
 }
 
-class _RegisterState extends State<Register>{
+class _RegisterState extends State<Register> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  final formaKey = GlobalKey<FormState>();
   var _obscureText = true;
+  String errorMessage = '';
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -31,7 +40,10 @@ class _RegisterState extends State<Register>{
                       const TextField(
                         decoration: InputDecoration(
                           labelText: 'Nome',
-                          prefixIcon: Icon(Icons.person, color: Colors.blueGrey),
+                          prefixIcon: Icon(
+                            Icons.person,
+                            color: Colors.blueGrey,
+                          ),
                           border: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.blueGrey),
                           ),
@@ -42,10 +54,12 @@ class _RegisterState extends State<Register>{
                         ),
                       ),
                       const SizedBox(height: 10),
-                      const TextField(
+                      TextField(
+                        controller: emailController,
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.email, color: Colors.blueGrey),
                           labelText: 'E-mail',
+
                           border: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.blueGrey),
                           ),
@@ -56,27 +70,33 @@ class _RegisterState extends State<Register>{
                         ),
                       ),
                       const SizedBox(height: 10),
-                       TextField(
-                      
+                      TextField(
+                        controller: passwordController,
                         decoration: InputDecoration(
                           suffixIcon: IconButton(
-                            icon: Icon(_obscureText == true ? Icons.visibility : Icons.visibility_off, color: Colors.blueGrey),
+                            icon: Icon(
+                              _obscureText == true
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: Colors.blueGrey,
+                            ),
                             onPressed: () {
                               setState(() {
                                 _obscureText = !_obscureText;
                               });
                             },
                           ),
-                          prefixIcon: const Icon(Icons.lock, color: Colors.blueGrey),
+                          prefixIcon: const Icon(
+                            Icons.lock,
+                            color: Colors.blueGrey,
+                          ),
                           labelText: 'Senha',
                           border: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.blueGrey),
                           ),
                           focusedBorder: UnderlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(5)),
-                            borderSide:
-                                BorderSide(color: Colors.blue),
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            borderSide: BorderSide(color: Colors.blue),
                           ),
                         ),
                         obscureText: _obscureText,
@@ -87,8 +107,7 @@ class _RegisterState extends State<Register>{
               ),
               const SizedBox(height: 75),
               Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextButton.icon(
                     onPressed: () {
@@ -98,7 +117,49 @@ class _RegisterState extends State<Register>{
                     label: const Text('Voltar'),
                   ),
                   ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () async {
+                      try {
+                        await authService.value.createAccount(
+                          email: emailController.text,
+                          password: passwordController.text,
+                        );
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: const Text('Sucesso'),
+                            icon: Icon(Icons.check, color: Colors.green),
+                            content: const Text('Usuário registrado com sucesso!'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pushReplacement(context, MaterialPageRoute(
+                                    builder: (context) => const Login(),
+                                  ));
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        );
+                      } on FirebaseAuthException catch (e) {
+                        setState(() {
+                          errorMessage = e.message ?? 'Um erro ocorreu';
+                          showDialog(context: context, builder: (BuildContext context) => AlertDialog(
+                            title: const Text('Erro'),
+                            icon: Icon(Icons.error, color: Colors.red,),
+                            content: Text(errorMessage),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ));
+                        });
+                      }
+                    },
                     icon: const Icon(Icons.save),
                     label: const Text('Registrar'),
                   ),

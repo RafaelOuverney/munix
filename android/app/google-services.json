@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1019144928397",
+    "project_id": "munix-a071b",
+    "storage_bucket": "munix-a071b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1019144928397:android:1e16331072e7cef2e376c4",
+        "android_client_info": {
+          "package_name": "com.example.munix"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCLJBj8Pm68klgUUjfoUDAZtbVbj3JYdw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
