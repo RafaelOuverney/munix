@@ -119,7 +119,7 @@ class _LoginState extends State<Login> {
                             email: emailController.text,
                             password: passwordController.text,
                           );
-                          Navigator.pushNamed(context, Rotas.main);
+                          Navigator.pushNamedAndRemoveUntil(context, Rotas.main, (route) => false);
                         } on FirebaseAuthException catch (e) {
                           setState(() async {
                             final translation = await GoogleTranslator().translate(e.message ?? 'Erro desconhecido', from: 'en', to: 'pt');

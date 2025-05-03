@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:munix/config/rotas.dart';
+import 'package:munix/pages/edit_profile.dart';
 import 'package:munix/pages/forgot_password.dart';
 import 'package:munix/pages/home.dart';
 import 'package:munix/pages/login.dart';
@@ -20,6 +21,7 @@ class Aplicativo extends StatelessWidget {
         Rotas.main: (context) =>  const HomePage(),
         Rotas.forgotPassword: (context) => const ForgotPassword(),
         Rotas.register: (context) =>  Register(),
+        Rotas.profile_edit: (context) =>  const EditProfilePage(),
       },
       // 
     );

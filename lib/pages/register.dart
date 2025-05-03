@@ -16,6 +16,7 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
   final formaKey = GlobalKey<FormState>();
   var _obscureText = true;
   String errorMessage = '';
@@ -38,7 +39,8 @@ class _RegisterState extends State<Register> {
                 child: Form(
                   child: Column(
                     children: [
-                      const TextField(
+                       TextField(
+                        controller: nameController,
                         decoration: InputDecoration(
                           labelText: 'Nome',
                           prefixIcon: Icon(
@@ -120,9 +122,31 @@ class _RegisterState extends State<Register> {
                   ElevatedButton.icon(
                     onPressed: () async {
                       try {
+                        if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                              title: const Text('Erro'),
+                              icon: Icon(Icons.error, color: Colors.red),
+                              content: const Text('Preencha todos os campos!'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ),
+                          );
+                          return;
+                        }
                         await authService.value.createAccount(
                           email: emailController.text,
                           password: passwordController.text,
+                        );
+                        await authService.value.updateUsername(
+                          username: nameController.text,
                         );
                         showDialog(
                           context: context,

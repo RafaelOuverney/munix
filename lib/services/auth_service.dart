@@ -24,7 +24,7 @@ class AuthService {
     return await firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
   }
 
-  Future <void> singOut() async {
+  Future <void> signOut() async {
     await firebaseAuth.signOut();
   }
 
@@ -58,5 +58,11 @@ class AuthService {
     AuthCredential credential = EmailAuthProvider.credential(email: email, password: currentPassword);
     await currentUser!.reauthenticateWithCredential(credential);
     await currentUser!.updatePassword(newPassword);
+  }
+
+  Future <void> updateProfilePicture({
+    required String url,
+  })async{
+    await currentUser!.updatePhotoURL(url);
   }
 }
