@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'package:flutter/material.dart';
 import 'package:munix/config/rotas.dart';
 import 'package:munix/pages/edit_profile.dart';

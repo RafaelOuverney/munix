@@ -12,20 +12,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
-  // Updated widget options - Late initialization needed because _buildProfileScreen needs context potentially
   late final List<Widget> _widgetOptions;
 
   @override
   void initState() {
     super.initState();
-    // Initialize _widgetOptions here where context is available if needed,
-    // or pass context to the build functions if they require it.
-    // For this example, context isn't strictly needed yet for these simple widgets.
     _widgetOptions = <Widget>[
-      _buildHomeScreen(), // Use a dedicated function for the home screen
+      _buildHomeScreen(),
       Center(child: Text('Pesquisa')),
       Center(child: Text('Biblioteca')),
-      _buildProfileScreen(context), // Pass context to the profile screen
+      _buildProfileScreen(context),
     ];
   }
 
@@ -38,20 +34,110 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Keep AppBar simple for now, or customize as needed
-      // AppBar might need to change based on the selected tab
       appBar: AppBar(
-        title: Text(_getAppBarTitle(_selectedIndex)), // Dynamic title
-        actions: _getAppBarActions(_selectedIndex), // Dynamic actions
+        title: Text(_getAppBarTitle(_selectedIndex)),
+        actions: _getAppBarActions(_selectedIndex),
       ),
       body: _widgetOptions[_selectedIndex],
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            SizedBox(
+              height: 110,
+              child: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                  _onItemTapped(3);
+                },
+                child: DrawerHeader(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xff536976), Color(0xff292e49)],
+                      stops: [0, 1],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundImage: NetworkImage(
+                          authService.value.currentUser?.photoURL ??
+                              'https://static.vecteezy.com/system/resources/previews/003/715/527/non_2x/picture-profile',
+                        ),
+                      ),
+                      SizedBox(width: 25),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            authService.value.currentUser?.displayName ??
+                                'Usuário',
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          ),
+                          Text(
+                            'Ver perfil',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize:
+                                  MediaQuery.of(context).size.width > 500
+                                      ? 15
+                                      : 12,
+                            ),
+                          ),
+
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text('Configurações'),
+              onTap: () {
+                Navigator.pop(context); 
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.trending_up_rounded),
+              title: Text('Novidades'),
+              onTap: () {
+                Navigator.pop(context); 
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.bar_chart),
+              title: Text('Estatisticas'),
+              onTap: () {
+                Navigator.pop(context); 
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.help),
+              title: Text('Ajuda'),
+              onTap: () {
+                Navigator.pop(context); 
+              },
+            ),
+          ],
+        ),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed, // To show all labels
-        selectedItemColor: Colors.white, // Example color
-        unselectedItemColor: Colors.white70, // Example color
-        backgroundColor: Colors.grey[900], // Example background color
+        type: BottomNavigationBarType.fixed, 
+        selectedItemColor: Colors.white, 
+        unselectedItemColor: Colors.white70, 
+        backgroundColor: Colors.grey[900], 
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Pesquisa'),
@@ -65,7 +151,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Helper to get AppBar title based on index
   String _getAppBarTitle(int index) {
     switch (index) {
       case 0:
@@ -81,21 +166,29 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // Helper to get AppBar actions based on index
+
   List<Widget>? _getAppBarActions(int index) {
     if (index == 0) {
-      // Only show these actions on the Home screen
+
       return [
-        IconButton(icon: Icon(Icons.notifications_none), onPressed: () {}),
-        IconButton(icon: Icon(Icons.history), onPressed: () {}),
-        IconButton(icon: Icon(Icons.settings), onPressed: () {}),
+        const SizedBox(width: 10),
+        Container(
+          child: CircleAvatar(
+            backgroundImage: NetworkImage(
+              authService.value.currentUser?.photoURL ??
+                  'https://static.vecteezy.com/system/resources/previews/003/715/527/non_2x/picture-profile',
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Padding(padding: const EdgeInsets.only(right: 16.0)),
       ];
-    } 
+    }
     return null; // No actions for other screens
   }
 }
 
-// Function to build the Home Screen content
+
 Widget _buildHomeScreen() {
   return ListView(
     children: <Widget>[
@@ -231,27 +324,35 @@ Widget _buildProfileScreen(BuildContext context) {
           title: Text('Sair', style: TextStyle(color: Colors.redAccent)),
           onTap: () async {
             try {
-              showDialog(context: context, builder: (BuildContext context) => AlertDialog(
-                title: Text('Sair'),
-                content: Text('Você tem certeza que deseja sair?'),
-                actions: [
-                  TextButton(
-                    child: Text('Cancelar'),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                  TextButton(
-                    child: Text('Sair'),
-                    onPressed: () async {
-                      Navigator.of(context).pop(); // Close the dialog
-                      await AuthService().signOut(); // Sign out
-                      // Optionally navigate to login screen or show a message
-                      Navigator.pushNamedAndRemoveUntil(context, Rotas.home, (route) => false);
-                    },
-                  ),
-                ],
-              ));
+              showDialog(
+                context: context,
+                builder:
+                    (BuildContext context) => AlertDialog(
+                      title: Text('Sair'),
+                      content: Text('Você tem certeza que deseja sair?'),
+                      actions: [
+                        TextButton(
+                          child: Text('Cancelar'),
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                        TextButton(
+                          child: Text('Sair'),
+                          onPressed: () async {
+                            Navigator.of(context).pop(); // Close the dialog
+                            await AuthService().signOut(); // Sign out
+                            // Optionally navigate to login screen or show a message
+                            Navigator.pushNamedAndRemoveUntil(
+                              context,
+                              Rotas.home,
+                              (route) => false,
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+              );
             } catch (e) {
-                print(e.toString());
+              print(e.toString());
             }
           },
         ),

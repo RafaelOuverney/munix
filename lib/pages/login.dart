@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,6 +12,7 @@ import 'package:munix/pages/forgot_password.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:munix/firebase_options.dart';
 import 'package:munix/services/auth_service.dart';
+import 'package:munix/services/spotify_api.dart';
 import 'package:translator/translator.dart';
 
 class Login extends StatefulWidget {
@@ -170,8 +173,10 @@ class _LoginState extends State<Login> {
                       'https://img.icons8.com/?size=512&id=17949&format=png',
                       scale: 12,
                     ),
-                    onPressed: () {
-                      // Handle Google login action
+                    onPressed: () async {
+                      print('Google login');
+                      await RemoteService();
+                      Navigator.pushNamed(context, Rotas.main);
                     },
                   ),
                 ],

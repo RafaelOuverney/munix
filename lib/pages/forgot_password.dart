@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:munix/services/auth_service.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
@@ -62,6 +63,23 @@ class _ForgotPasswordState extends State<ForgotPassword>{
                   showDialog(context: context, builder: (BuildContext context) => AlertDialog(
                     title: const Text('Erro'),
                     content: const Text('E-mail inválido.'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text('OK'),
+                      ),
+                    ],
+                  ));
+                  return;
+                }
+                try {
+                  AuthService().resetPassword(email: emailController.text);
+                } catch (e) {
+                  showDialog(context: context, builder: (BuildContext context) => AlertDialog(
+                    title: const Text('Erro'),
+                    content: const Text('Erro ao enviar o e-mail de recuperação.'),
                     actions: [
                       TextButton(
                         onPressed: () {
