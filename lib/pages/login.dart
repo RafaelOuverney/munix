@@ -12,7 +12,7 @@ import 'package:munix/pages/forgot_password.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:munix/firebase_options.dart';
 import 'package:munix/services/auth_service.dart';
-import 'package:munix/services/spotify_api.dart';
+// import 'package:munix/services/spotify_api.dart';
 import 'package:translator/translator.dart';
 
 class Login extends StatefulWidget {
@@ -175,7 +175,7 @@ class _LoginState extends State<Login> {
                     ),
                     onPressed: () async {
                       print('Google login');
-                      await RemoteService();
+                      // await RemoteService();
                       Navigator.pushNamed(context, Rotas.main);
                     },
                   ),

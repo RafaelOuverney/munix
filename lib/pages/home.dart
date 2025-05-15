@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:munix/config/rotas.dart';
 import 'package:munix/services/auth_service.dart';
 
@@ -123,9 +124,53 @@ class _HomePageState extends State<HomePage> {
             ),
             ListTile(
               leading: Icon(Icons.help),
-              title: Text('Ajuda'),
+              title: Text('Sobre'),
               onTap: () {
+                showAdaptiveAboutDialog(context: context, applicationName: 'Munix', applicationVersion: '1.0.0', applicationIcon: SvgPicture.network(
+                "https://upload.wikimedia.org/wikipedia/commons/2/26/Beats_Music_logo.svg",
+                height: 100,
+                width: 100,
+              ), children: [
+                  Text('Munix é um aplicativo de streaming de música que oferece uma vasta biblioteca de músicas e playlists personalizadas.'),
+                ]);
                 Navigator.pop(context); 
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(Icons.logout, color: Colors.redAccent),
+              title: Text('Sair', style: TextStyle(color: Colors.redAccent)),
+              onTap: () async {
+                try {
+                  showDialog(
+                    context: context,
+                    builder:
+                        (BuildContext context) => AlertDialog(
+                          title: Text('Sair'),
+                          content: Text('Você tem certeza que deseja sair?'),
+                          actions: [
+                            TextButton(
+                              child: Text('Cancelar'),
+                              onPressed: () => Navigator.of(context).pop(),
+                            ),
+                            TextButton(
+                              child: Text('Sair'),
+                              onPressed: () async {
+                                Navigator.of(context).pop(); 
+                                await AuthService().signOut(); 
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  Rotas.home,
+                                  (route) => false,
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                  );
+                } catch (e) {
+                  print(e.toString());
+                }
               },
             ),
           ],
@@ -193,17 +238,17 @@ Widget _buildHomeScreen() {
   return ListView(
     children: <Widget>[
       _buildSectionTitle('Tocadas recentemente'),
-      _buildHorizontalList(), // Placeholder for recently played items
+      _buildHorizontalList(), 
       _buildSectionTitle('Feito para você'),
-      _buildHorizontalList(), // Placeholder for recommendations
+      _buildHorizontalList(), 
       _buildSectionTitle('Novos Lançamentos'),
-      _buildHorizontalList(), // Placeholder for new releases
-      // Add more sections as needed
+      _buildHorizontalList(), 
+
     ],
   );
 }
 
-// Helper function to build section titles
+
 Widget _buildSectionTitle(String title) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -214,7 +259,6 @@ Widget _buildSectionTitle(String title) {
   );
 }
 
-// Helper function to build a horizontal list (placeholder)
 Widget _buildHorizontalList() {
   return Container(
     height: 180, // Adjust height as needed
@@ -243,7 +287,7 @@ Widget _buildHorizontalList() {
               ),
               SizedBox(height: 5),
               Text(
-                'Item ${index + 1}', // Placeholder title
+                'Item ${index + 1}', 
                 style: TextStyle(fontWeight: FontWeight.bold),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -256,7 +300,6 @@ Widget _buildHorizontalList() {
   );
 }
 
-// --- New Function to build the Profile Screen ---
 Widget _buildProfileScreen(BuildContext context) {
   return SingleChildScrollView(
     // Use SingleChildScrollView to prevent overflow if content is long
@@ -267,8 +310,7 @@ Widget _buildProfileScreen(BuildContext context) {
         SizedBox(height: 20),
         CircleAvatar(
           radius: 50,
-          backgroundColor: Colors.grey[700], // Placeholder background
-          // Replace with NetworkImage or AssetImage for actual image
+          backgroundColor: Colors.grey[700], 
           backgroundImage: NetworkImage(
             authService.value.currentUser?.photoURL ??
                 'https://static.vecteezy.com/system/resources/previews/003/715/527/non_2x/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-vector.jpg',
@@ -285,7 +327,7 @@ Widget _buildProfileScreen(BuildContext context) {
           },
         ),
         SizedBox(height: 30),
-        Divider(), // Visual separator
+        Divider(), 
         ListTile(
           leading: Icon(Icons.edit_note),
           title: Text('Editar Perfil'),
@@ -299,7 +341,6 @@ Widget _buildProfileScreen(BuildContext context) {
           title: Text('Notificações'),
           trailing: Icon(Icons.chevron_right),
           onTap: () {
-            // TODO: Navigate to notification settings
           },
         ),
         ListTile(
@@ -307,7 +348,6 @@ Widget _buildProfileScreen(BuildContext context) {
           title: Text('Privacidade'),
           trailing: Icon(Icons.chevron_right),
           onTap: () {
-            // TODO: Navigate to privacy settings
           },
         ),
         ListTile(
@@ -315,7 +355,6 @@ Widget _buildProfileScreen(BuildContext context) {
           title: Text('Configurações da Conta'),
           trailing: Icon(Icons.chevron_right),
           onTap: () {
-            // TODO: Navigate to account settings
           },
         ),
         Divider(),
@@ -338,9 +377,8 @@ Widget _buildProfileScreen(BuildContext context) {
                         TextButton(
                           child: Text('Sair'),
                           onPressed: () async {
-                            Navigator.of(context).pop(); // Close the dialog
-                            await AuthService().signOut(); // Sign out
-                            // Optionally navigate to login screen or show a message
+                            Navigator.of(context).pop(); 
+                            await AuthService().signOut(); 
                             Navigator.pushNamedAndRemoveUntil(
                               context,
                               Rotas.home,

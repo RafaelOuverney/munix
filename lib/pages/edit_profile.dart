@@ -136,7 +136,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Foto de perfil atualizada!')),
                   );
-                  print('Change profile picture tapped');
                 },
                 child: Stack(
                   alignment: Alignment.bottomRight,
