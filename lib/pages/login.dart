@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:munix/config/rotas.dart';
+import 'package:munix/pages/aplicativo_cadastro.dart';
 import 'package:munix/pages/forgot_password.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -25,6 +26,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   var _obscureText = true;
   String errorMessage = '';
   @override
@@ -53,7 +55,11 @@ class _LoginState extends State<Login> {
               ),
               const SizedBox(height: 150),
               Form(
-                child:  TextField(
+                key: _formKey,
+                child:  TextFormField(
+                  validator: (value) => value!.isEmpty || !value.contains('@')
+                      ? 'E-mail inválido'
+                      : null,
                   controller: emailController,
                   decoration: InputDecoration(
                     labelText: 'E-mail',
@@ -174,9 +180,9 @@ class _LoginState extends State<Login> {
                       scale: 12,
                     ),
                     onPressed: () async {
-                      print('Google login');
+                      Navigator.pushNamed(context, Rotas.aplicativo_cadastro);
                       // await RemoteService();
-                      Navigator.pushNamed(context, Rotas.main);
+                      // Navigator.pushNamed(context, Rotas.main);
                     },
                   ),
                 ],

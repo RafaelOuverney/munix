@@ -4,4 +4,5 @@ class Rotas {
   static const String register = '/register';
   static const String main = '/main';
   static const String profile_edit = '/profile_edit';
+  static const String aplicativo_cadastro = '/aplicativo_cadastro';
 }

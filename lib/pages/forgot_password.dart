@@ -9,6 +9,7 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword>{
+  final _formKey = GlobalKey<FormState>();
   var emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -25,9 +26,10 @@ class _ForgotPasswordState extends State<ForgotPassword>{
           Container(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: Form(
+              key: _formKey,
               child: TextFormField(
                 controller: emailController,
-                validator: (value) => value!.isEmpty ? 'E-mail inválido' : null,
+                validator: (value) => value!.isEmpty || !value.contains('@') ? 'E-mail inválido' : null,
                 decoration: InputDecoration(
                   labelText: 'E-mail',
                   prefixIcon: Icon(Icons.email, color: Colors.blueGrey),
@@ -49,7 +51,7 @@ class _ForgotPasswordState extends State<ForgotPassword>{
           ),
           SizedBox(height: 75),
           Row(
-            spacing: 10.0,
+            
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               TextButton(
@@ -59,7 +61,7 @@ class _ForgotPasswordState extends State<ForgotPassword>{
                 child: const Text('Cancelar'),
               ),
               TextButton.icon(onPressed: (){
-                if (emailController.text.isEmpty) {
+                if (!emailController.text.contains('@') || emailController.text.isEmpty) {
                   showDialog(context: context, builder: (BuildContext context) => AlertDialog(
                     title: const Text('Erro'),
                     content: const Text('E-mail inválido.'),
