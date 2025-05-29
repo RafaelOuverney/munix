@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:munix/services/auth_service.dart';
 
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({Key? key}) : super(key: key);
+  const EditProfilePage({super.key});
 
   @override
   _EditProfilePageState createState() => _EditProfilePageState();
@@ -68,7 +68,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               GestureDetector(
                 onTap: () {
                   showModalBottomSheet(context: context, builder: (_) {
-                    return Container(
+                    return SizedBox(
                       height: 200,
                       child: Column(
                         children: [

@@ -4,7 +4,7 @@ import 'package:munix/config/rotas.dart';
 import 'package:munix/services/auth_service.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -260,7 +260,7 @@ Widget _buildSectionTitle(String title) {
 }
 
 Widget _buildHorizontalList() {
-  return Container(
+  return SizedBox(
     height: 180, // Adjust height as needed
     child: ListView.builder(
       scrollDirection: Axis.horizontal,

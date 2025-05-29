@@ -8,7 +8,6 @@ import 'package:munix/pages/forgot_password.dart';
 import 'package:munix/pages/home.dart';
 import 'package:munix/pages/login.dart';
 import 'package:munix/pages/register.dart';
-import 'package:munix/pages/aplicativo_cadastro.dart';
 
 class Aplicativo extends StatelessWidget {
   const Aplicativo({super.key});
