@@ -3,6 +3,7 @@
 import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -54,115 +55,139 @@ class _LoginState extends State<Login> {
                 ),
               ),
               const SizedBox(height: 150),
-              Form(
-                key: _formKey,
-                child:  TextFormField(
-                  validator: (value) => value!.isEmpty || !value.contains('@')
-                      ? 'E-mail inválido'
-                      : null,
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    labelText: 'E-mail',
-                    prefixIcon: Icon(Icons.email, color: Colors.blueGrey),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blueGrey),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                      borderSide: BorderSide(color: Colors.blue),
-                    ),
-                  ),
+                CupertinoTextField(
+                controller: emailController,
+                placeholder: 'E-mail',
+                prefix: const Padding(
+                  padding: EdgeInsets.only(left: 8.0),
+                  child: Icon(Icons.email, color: Colors.blueGrey),
                 ),
+                keyboardType: TextInputType.emailAddress,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                  color: Colors.grey,
+                  width: 1.0,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
               ),
               const SizedBox(height: 10),
-              TextField(
+                CupertinoTextField(
                 controller: passwordController,
-                decoration: InputDecoration(
-                  labelText: 'Senha',
-                  prefixIcon: const Icon(Icons.lock, color: Colors.blueGrey),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscureText == true
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      color: Colors.blueGrey,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _obscureText = !_obscureText;
-                      });
-                    },
+                placeholder: 'Senha',
+                prefix: const Padding(
+                  padding: EdgeInsets.only(left: 8.0),
+                  child: Icon(Icons.lock, color: Colors.blueGrey),
+                ),
+                suffix: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  child: Icon(
+                  _obscureText == true
+                    ? CupertinoIcons.eye_fill
+                    : CupertinoIcons.eye_slash_fill,
+                  color: Colors.blueGrey,
                   ),
-                  border: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blueGrey),
-                  ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                    borderSide: BorderSide(color: Colors.blue),
-                  ),
+                  onPressed: () {
+                  setState(() {
+                    _obscureText = !_obscureText;
+                  });
+                  },
                 ),
                 obscureText: _obscureText,
-              ),
-              Text(errorMessage, style: const TextStyle(color: Colors.red)),
-              const SizedBox(height: 50),
-              GestureDetector(
-                onTap:
-                    () => showModalBottomSheet(
-                      context: context,
-                      builder: (BuildContext context) => ForgotPassword(),
-                    ),
-                child: const Text(
-                  'Esqueci minha senha',
-                  style: TextStyle(color: Color.fromARGB(255, 0, 88, 160)),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                  color: Colors.grey,
+                  width: 1.0,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
-              ),
-              const SizedBox(height: 20),
+                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
+                ),
+              Text(errorMessage, style: const TextStyle(color: Colors.red)),
               Center(
-                child: Row(
+                child: Column(
+                  spacing: 5,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ElevatedButton.icon(
-                      onPressed: () async {
+                    SizedBox(
+                      width: 500,
+                      child: CupertinoButton(
+                        color: Colors.black87,
+                        onPressed: () async {
                         try {
                           await authService.value.singIn(
-                            email: emailController.text,
-                            password: passwordController.text,
+                          email: emailController.text,
+                          password: passwordController.text,
                           );
+                          if (!mounted) return;
                           Navigator.pushNamedAndRemoveUntil(context, Rotas.main, (route) => false);
                         } on FirebaseAuthException catch (e) {
-                          setState(() async {
-                            final translation = await GoogleTranslator().translate(e.message ?? 'Erro desconhecido', from: 'en', to: 'pt');
-                            setState(() {
-                              errorMessage = translation.text;
-                            });
+                          String finalErrorMessage;
+                          try {
+                          // Perform async translation first
+                          final translation = await GoogleTranslator().translate(
+                            e.message ?? 'Erro desconhecido', // Default message if e.message is null
+                            from: 'en',
+                            to: 'pt',
+                          );
+                          finalErrorMessage = translation.text;
+                          } catch (translationError) {
+                          // Fallback if translation fails: use the original Firebase message (if available)
+                          // or a generic Portuguese error message.
+                          finalErrorMessage = e.message ?? 'Ocorreu um erro de autenticação.';
+                          }
+                          
+                          if (!mounted) return;
+                          setState(() {
+                          errorMessage = finalErrorMessage;
                           });
                         }
-                      },
-                      label: const Text('Login'),
-                      icon: const Icon(Icons.login),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blueGrey,
-                        iconColor: Colors.white,
-                        foregroundColor: Colors.white,
+                        },
+                        child: const Text(
+                        'Login',
+                        style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.pushNamed(context, Rotas.register);
-                      },
-                      label: Text('Registrar'),
-                      icon: Icon(Icons.person_add_alt_1),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blueGrey,
-                        iconColor: Colors.white,
-                        foregroundColor: Colors.white,
+                    SizedBox(
+                      width: 500,
+                      child: CupertinoButton(
+                        color: const Color.fromARGB(255, 199, 199, 199),
+                        onPressed: () {
+                          Navigator.pushNamed(context, Rotas.register);
+                        },
+                        child: const Text(
+                          'Registrar',
+                          style: TextStyle(color: Colors.black),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 150),
+              const SizedBox(height: 20),
+                GestureDetector(
+                onTap: () => showCupertinoModalPopup(
+                  context: context,
+                  builder: (BuildContext context) => CupertinoActionSheet(
+                  title: const Text('Recuperar senha'),
+                  message: const Text('Digite seu e-mail para redefinir a senha.'),
+                  actions: [
+                    ForgotPassword(),
+                  ],
+                  cancelButton: CupertinoActionSheetAction(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Cancelar'),
+                  ),
+                  ),
+                ),
+                child: const Text(
+                  'Esqueci minha senha',
+                  style: TextStyle(color: Color.fromARGB(255, 0, 88, 160)),
+                ),
+                ),
+              const SizedBox(height: 120),
 
               Center(
                 child: const Text(
@@ -171,21 +196,24 @@ class _LoginState extends State<Login> {
                 ),
               ),
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    icon: Image.network(
-                      'https://img.icons8.com/?size=512&id=17949&format=png',
-                      scale: 12,
+              SizedBox(
+                width: 500,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: Image.network(
+                        'https://img.icons8.com/?size=512&id=17949&format=png',
+                        scale: 12,
+                      ),
+                      onPressed: () async {
+                        Navigator.pushNamed(context, Rotas.aplicativo_cadastro);
+                        // await RemoteService();
+                        // Navigator.pushNamed(context, Rotas.main);
+                      },
                     ),
-                    onPressed: () async {
-                      Navigator.pushNamed(context, Rotas.aplicativo_cadastro);
-                      // await RemoteService();
-                      // Navigator.pushNamed(context, Rotas.main);
-                    },
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
