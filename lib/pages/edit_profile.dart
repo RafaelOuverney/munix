@@ -92,8 +92,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             leading: const Icon(Icons.link),
                             title: const Text('Inserir URL'),
                             onTap: () {
-                              // Implementar lógica para inserir URL
                               showDialog(context: context, builder: (_) {
+                                String url = '';
                                 return AlertDialog(
                                   title: const Text('Inserir URL da Imagem'),
                                   content: TextFormField(
@@ -102,9 +102,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       border: OutlineInputBorder(),
                                     ),
                                     onChanged: (value) {
-                                      authService.value.updateProfilePicture(
-                                        url: value,
-                                      );
+                                      url = value;
                                     },
                                   ),
                                   actions: [
@@ -115,27 +113,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     TextButton(
                                       child: const Text('Salvar'),
                                       onPressed: () {
-                                        // Implementar lógica para salvar a URL
+                                        authService.value.updateProfilePicture(url: url);
                                         Navigator.pop(context);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('Foto de perfil atualizada!')),
+                                        );
                                       },
                                     ),
                                   ],
                                 );
                               });
                             },
-
                           )
                         ],
                       ),
                     );
                   });
-
-                  authService.value.updateProfilePicture(
-                    url: 'https://example.com/new_profile_picture.jpg',
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Foto de perfil atualizada!')),
-                  );
                 },
                 child: Stack(
                   alignment: Alignment.bottomRight,

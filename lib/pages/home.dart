@@ -8,6 +8,11 @@ import 'package:munix/pages/spotify_style_player.dart';
 import 'package:munix/pages/now_playing_screen.dart';
 import 'package:munix/widgets/mini_player.dart';
 import 'package:munix/pages/search_page.dart';
+import 'package:munix/pages/discover_page.dart';
+import 'package:munix/pages/analytics_page.dart';
+import 'package:munix/pages/playlist_page.dart';
+import 'package:munix/services/storage_service.dart';
+import 'package:munix/services/notification_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -26,6 +31,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _initServices();
     _widgetOptions = <Widget>[
       SpotifyStylePlayer(
         onTrackSelected: (track, index, playlist) async {
@@ -82,9 +88,67 @@ class _HomePageState extends State<HomePage> {
           }
         },
       ),
-      const Center(child: Text('Biblioteca')),
-      _buildProfileScreen(context),
+      PlaylistPage(
+        onTrackSelected: (track, index, playlist) async {
+          setState(() {
+            _currentTrack = track;
+            _playlist = playlist;
+          });
+          try {
+            await _audioPlayer.setUrl(track.audio);
+            await _audioPlayer.play();
+            
+            if (mounted) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NowPlayingScreen(
+                    audioPlayer: _audioPlayer,
+                    playlist: playlist,
+                    initialIndex: index,
+                  ),
+                ),
+              );
+            }
+          } catch (e) {
+            print("Error playing audio: $e");
+          }
+        },
+      ),
+      DiscoverPage(
+        onTrackSelected: (track, index, playlist) async {
+          setState(() {
+            _currentTrack = track;
+            _playlist = playlist;
+          });
+          try {
+            await _audioPlayer.setUrl(track.audio);
+            await _audioPlayer.play();
+            
+            if (mounted) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NowPlayingScreen(
+                    audioPlayer: _audioPlayer,
+                    playlist: playlist,
+                    initialIndex: index,
+                  ),
+                ),
+              );
+            }
+          } catch (e) {
+            print("Error playing audio: $e");
+          }
+        },
+      ),
+      AnalyticsPage(),
     ];
+  }
+
+  Future<void> _initServices() async {
+    await StorageService.init();
+    await NotificationService.init();
   }
 
   Future<void> _playTrack(Track track, int index) async {
@@ -204,8 +268,9 @@ class _HomePageState extends State<HomePage> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Pesquisa'),
-          BottomNavigationBarItem(icon: Icon(Icons.library_music), label: 'Biblioteca'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
+          BottomNavigationBarItem(icon: Icon(Icons.library_music), label: 'Playlists'),
+          BottomNavigationBarItem(icon: Icon(Icons.explore), label: 'Descobrir'),
+          BottomNavigationBarItem(icon: Icon(Icons.analytics), label: 'Stats'),
         ],
       ),
     );

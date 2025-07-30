@@ -31,20 +31,19 @@ class AplicativoCadastro extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey();
-    final padding = MediaQuery.of(context).size.width/7;
+    final formKey = GlobalKey<FormState>();
+    final padding = MediaQuery.of(context).size.width / 7;
     return Scaffold(
       appBar: AppBar(title: Text("Cadastro")),
       body: Container(
-        padding: EdgeInsets.only(left: padding, right: padding), 
-              key: formKey,
+        padding: EdgeInsets.only(left: padding, right: padding),
         child: Form(
-          
+          key: formKey,
           child: ListView(
             children: [
-              campos_formulario("Nome",Icon(Icons.person_add_alt_1), context),
-              campos_formulario("Item",Icon(Icons.remove), context),
-              campos_formulario("Quantidade",Icon(Icons.add), context),
+              campos_formulario("Nome", Icon(Icons.person_add_alt_1), context),
+              campos_formulario("Item", Icon(Icons.remove), context),
+              campos_formulario("Quantidade", Icon(Icons.add), context),
               campo_opcoes('cidades', context, [
                 DropdownMenuItem(value: 'ND', child: Text('Selecionar Valor')),
                 DropdownMenuItem(value: 'SP', child: Text('São Paulo')),
@@ -52,9 +51,10 @@ class AplicativoCadastro extends StatelessWidget {
                 DropdownMenuItem(value: 'MG', child: Text('Minas Gerais')),
               ]),
             ],
-            
-          )
-          )),
+          ),
+        ),
+      ),
     );
   }
 }
+

@@ -25,4 +25,15 @@ class Track {
       audio: json['audio'],
     );
   }
+
+  Map toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'artist_name': artistName,
+      'album_name': albumName,
+      'album_image': image,
+      'audio': audio,
+    };
+  }
 }

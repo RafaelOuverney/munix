@@ -169,13 +169,19 @@ class _RegisterState extends State<Register> {
                           ),
                         );
                       } on FirebaseAuthException catch (e) {
-                        setState(() async {
-                          await GoogleTranslator().translate(e.message ?? 'Erro desconhecido', from: 'en', to: 'pt').then((value) {
-                            errorMessage = value.text;
-                          });
-                          showDialog(context: context, builder: (BuildContext context) => AlertDialog(
+                        final translation = await GoogleTranslator().translate(
+                          e.message ?? 'Erro desconhecido',
+                          from: 'en',
+                          to: 'pt',
+                        );
+                        setState(() {
+                          errorMessage = translation.text;
+                        });
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
                             title: const Text('Erro'),
-                            icon: Icon(Icons.error, color: Colors.red,),
+                            icon: Icon(Icons.error, color: Colors.red),
                             content: Text(errorMessage),
                             actions: [
                               TextButton(
@@ -185,8 +191,8 @@ class _RegisterState extends State<Register> {
                                 child: const Text('OK'),
                               ),
                             ],
-                          ));
-                        });
+                          ),
+                        );
                       }
                     },
                     icon: const Icon(Icons.save),
